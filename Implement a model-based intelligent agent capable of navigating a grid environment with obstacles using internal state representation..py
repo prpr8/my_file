@@ -1,42 +1,65 @@
+# Robot Path Planning using BFS on a 5x5 Grid
+# 0 = Free cell, 1 = Obstacle
+
+from collections import deque
+
 grid = [
-    ['A', '0', '#'],
-    ['0', '0', '#'],
-    ['#', '0', 'G']
+    [0, 0, 0, 0, 0],
+    [0, 1, 1, 1, 0],
+    [0, 0, 0, 1, 0],
+    [1, 1, 0, 0, 0],
+    [0, 0, 0, 1, 0]
 ]
 
-position = [0, 0]
-visited = []
+source = (0, 0)
+destination = (4, 4)
 
-while True:
-    r, c = position
+def bfs(grid, source, destination):
+    rows = len(grid)
+    cols = len(grid[0])
 
-    print("Position:", position)
+    queue = deque()
+    queue.append((source, [source]))
 
-    if grid[r][c] == 'G':
-        print("Goal Reached!")
-        break
+    visited = set()
+    visited.add(source)
 
-    visited.append(position.copy())
-    grid[r][c] = 'V'
+    # Up, Down, Left, Right
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
-    # Right
-    if c + 1 < 3 and grid[r][c+1] in ['0', 'G']:
-        position = [r, c+1]
+    while queue:
+        current, path = queue.popleft()
 
-    # Down
-    elif r + 1 < 3 and grid[r+1][c] in ['0', 'G']:
-        position = [r+1, c]
+        print("Visiting:", current)
 
-    # Left
-    elif c - 1 >= 0 and grid[r][c-1] in ['0', 'G']:
-        position = [r, c-1]
+        if current == destination:
+            return path
 
-    # Up
-    elif r - 1 >= 0 and grid[r-1][c] in ['0', 'G']:
-        position = [r-1, c]
+        r, c = current
 
-    else:
-        print("Goal Not Found!")
-        break
+        for dr, dc in directions:
+            nr = r + dr
+            nc = c + dc
+            next_cell = (nr, nc)
 
-print("Visited:", visited)
+            if (0 <= nr < rows and
+                0 <= nc < cols and
+                grid[nr][nc] == 0 and
+                next_cell not in visited):
+
+                visited.add(next_cell)
+                queue.append((next_cell, path + [next_cell]))
+
+    return None
+
+
+path = bfs(grid, source, destination)
+
+print("\nShortest Path:")
+
+if path:
+    for cell in path:
+        print(cell)
+    print("\nNumber of moves:", len(path) - 1)
+else:
+    print("No path found")
