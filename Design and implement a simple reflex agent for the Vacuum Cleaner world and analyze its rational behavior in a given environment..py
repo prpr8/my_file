@@ -1,22 +1,23 @@
-environment = {"a":"clean","b":"dirty"}
+environment = {'A':'dirty', 'B':'dirty'}
+location = 'A'
 
-position = "a"
+while True:
+    print("Agent in Room : ", location)
+    print("Status : ", environment)
 
-while "dirty" in environment.values():
-    if environment[position]=="dirty":
-        print("action suck")
-        environment[position]="clean"
-    elif position == "a":
-        print("move right")
-        position = "b"
+    if environment['A'] == 'clean' and environment['B'] == 'clean':
+        print("Goal Achieved! both room are clean")
+        break
+
+    if environment[location] == 'dirty':
+        print("room ", location, " is dirty")
+        print("Action : Suck")
+        environment[location] = 'clean'
     else:
-        print('move left')
-        position= "a"
-        
-        
-
-print("Final Room Status:", environment)
-print("All rooms are clean!")
-
-    
-    
+        if location == 'A':
+            print("Action : Move Right")
+            location = 'B'
+        else:
+            print("Action : Move Left")
+            location = 'B'
+    print("-"*40)   
